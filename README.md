@@ -1,0 +1,81 @@
+## mcc
+
+`mcc` is a tiny CLI that compiles and runs a local CUDA C (`.cu`) program on a cloud GPU using [Modal](https://modal.com). Install the package published as `modal-cuda`, keep using the `mcc` command, and the tool will ship your source to a disposable container, invoke `nvcc` inside the GPU runtime you pick, stream stdout/stderr back to your terminal, and clean up the artifacts once the run finishes.
+
+### Highlights
+
+- Runs CUDA samples on-demand without managing local GPU drivers.
+- Lets you choose GPU tier (`T4`, `A100`, `H100`, etc.) and container image per run.
+- Accepts extra `nvcc` arguments for fine-grained builds.
+- Wraps the entire workflow (upload → compile → execute → teardown) in a single command.
+
+## Requirements
+
+- Python 3.12+
+- A Modal account with CLI access (`modal token new`).
+- Network access that allows Modal to pull the chosen CUDA container image.
+
+## Installation
+
+```bash
+# install from PyPI/TestPyPI
+uv add modal-cuda          # exposes the `mcc` command
+
+# from source (editable)
+uv sync && uv pip install -e .
+# or: pip install -e .
+```
+
+## Usage
+
+```bash
+mcc path/to/program.cu [--gpu GPU] [--image IMAGE] [--timeout SECONDS] [--nvcc-arg FLAG ...]
+```
+
+| Flag | Description |
+| --- | --- |
+| `input` | Path to a `.cu` file. The file must exist and be non-empty. |
+| `--app` | Name of the Modal app; defaults to the source filename. Useful to group runs in the Modal dashboard. |
+| `--gpu` | GPU type to request (`T4`, `L4`, `A10`, `A100`, `A100-40GB`, `A100-80GB`, `L40S`, `H100`, `H200`, `B200`). Defaults to `T4`. |
+| `--image` | Container image reference passed to `modal.Image.from_registry`. Defaults to `nvidia/cuda:13.0.2-cudnn-devel-ubuntu22.04`. |
+| `--timeout` | Execution timeout (seconds) enforced by Modal. Defaults to 600. |
+| `--nvcc-arg` | Additional flag forwarded to `nvcc`. Repeat for multiple flags (e.g., `--nvcc-arg -arch=sm_90`). |
+
+Example session:
+
+```bash
+# Run the provided sample kernel on an A100 GPU with verbose PTX output
+mcc sample.cu --gpu A100 --nvcc-arg -Xptxas --nvcc-arg -v
+```
+
+Modal streams stdout/stderr as the compiler and executable run. If either command exits non‑zero, `mcc` surfaces the failure message and returns a non-zero status to your shell.
+
+## Development
+
+1. Install dependencies with `uv sync` (or `pip install -r requirements.txt` if you export them).
+2. Run `python -m mcc.main path/to/file.cu` to skip the console entry point while iterating.
+3. Use `uv run python -m pip install -e .` to get an editable install for local testing.
+
+## Publishing
+
+The repo ships with `.github/workflows/publish.yml`, which:
+
+- Builds wheels/sdists with `uv build`.
+- Publishes to PyPI whenever you cut a GitHub release or trigger `workflow_dispatch`.
+- Accepts an optional `repository=pypi|testpypi` input for manual runs (defaults to `pypi`).
+
+To enable it:
+
+1. Create a PyPI (or TestPyPI) API token for the `modal-cuda` project.
+2. Add it to the repo as the `PYPI_API_TOKEN` Actions secret.
+3. Bump the version in `pyproject.toml`, push to `main`, then create a GitHub release or manually dispatch the workflow to publish.
+
+## Troubleshooting
+
+- **`modal.ClientException: Unauthorized`** &rarr; Run `modal token new` and try again.
+- **`nvcc failed to compile...`** &rarr; Fix compiler errors shown in the streamed stderr or adjust `--nvcc-arg` flags.
+- **Long image pull times** &rarr; Prefer the default CUDA image or build a custom Modal image that layers your dependencies once and reuse it via `--image`.
+
+## License
+
+MIT © ExpressGradient

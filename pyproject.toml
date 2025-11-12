@@ -1,0 +1,14 @@
+[project]
+name = "modal-cuda"
+version = "0.1.0"
+description = "CLI that compiles and runs CUDA C programs on Modal GPUs"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { file = "LICENSE" }
+authors = [{ name = "ExpressGradient" }]
+dependencies = [
+    "modal>=1.2.2",
+]
+
+[project.scripts]
+mcc = "main:main"
