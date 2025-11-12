@@ -35,7 +35,7 @@ def main():
     parser.add_argument(
         "--image",
         type=str,
-        default="nvidia/cuda:13.0.2-cudnn-devel-ubuntu22.04",
+        default="nvidia/cuda:12.4.1-devel-ubuntu22.04",
         help="Container image to use for Modal (registry reference)",
     )
     parser.add_argument(

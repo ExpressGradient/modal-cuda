@@ -350,17 +350,6 @@ wheels = [
 ]
 
 [[package]]
-name = "mcc"
-version = "0.1.0"
-source = { virtual = "." }
-dependencies = [
-    { name = "modal" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "modal", specifier = ">=1.2.2" }]
-
-[[package]]
 name = "mdurl"
 version = "0.1.2"
 source = { registry = "https://pypi.org/simple" }
@@ -393,6 +382,17 @@ sdist = { url = "https://files.pythonhosted.org/packages/2a/36/67ec50cfb7b2d8668
 wheels = [
     { url = "https://files.pythonhosted.org/packages/9f/87/2d230ff2c50b9f92f94041d1f7665d15d2d8e16bc5bbcc8f30b37a538be6/modal-1.2.2-py3-none-any.whl", hash = "sha256:1278aadb412b743b795089f22282797d0aca3c331c73899db4ac230120c80e2f", size = 738436, upload-time = "2025-11-10T17:00:10.778Z" },
 ]
+
+[[package]]
+name = "modal-cuda"
+version = "0.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "modal" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "modal", specifier = ">=1.2.2" }]
 
 [[package]]
 name = "multidict"
