@@ -18,12 +18,14 @@
 ## Installation
 
 ```bash
-# install from PyPI/TestPyPI
+# install from PyPI/
 uv add modal-cuda          # exposes the `mcc` command
 
 # from source (editable)
 uv sync && uv pip install -e .
-# or: pip install -e .
+
+# run command using uvx
+uvx --from modal-cuda mcc ...
 ```
 
 ## Usage
@@ -52,23 +54,10 @@ Modal streams stdout/stderr as the compiler and executable run. If either comman
 
 ## Development
 
-1. Install dependencies with `uv sync` (or `pip install -r requirements.txt` if you export them).
+1. Install dependencies with `uv sync`.
 2. Run `python -m mcc.main path/to/file.cu` to skip the console entry point while iterating.
 3. Use `uv run python -m pip install -e .` to get an editable install for local testing.
 
-## Publishing
-
-The repo ships with `.github/workflows/publish.yml`, which:
-
-- Builds wheels/sdists with `uv build`.
-- Publishes to PyPI whenever you cut a GitHub release or trigger `workflow_dispatch`.
-- Accepts an optional `repository=pypi|testpypi` input for manual runs (defaults to `pypi`).
-
-To enable it:
-
-1. Create a PyPI (or TestPyPI) API token for the `modal-cuda` project.
-2. Add it to the repo as the `PYPI_API_TOKEN` Actions secret.
-3. Bump the version in `pyproject.toml`, push to `main`, then create a GitHub release or manually dispatch the workflow to publish.
 
 ## Troubleshooting
 
