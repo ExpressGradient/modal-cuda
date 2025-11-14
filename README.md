@@ -17,15 +17,35 @@
 
 ## Installation
 
+Pick whichever path matches your workflow:
+
 ```bash
-# install from PyPI
-uv add modal-cuda          # exposes the `mcc` command
-
-# from source (editable)
-uv sync && uv pip install -e .
-
-# run command using uvx
+# one-off run without installing anything
 uvx --from modal-cuda mcc ...
+
+# install once as a reusable uv tool, then call `mcc ...`
+uv tool install modal-cuda
+
+# add the dependency to a project and expose `mcc`
+uv add modal-cuda
+
+# editable install from the local source checkout
+uv sync && uv pip install -e .
+```
+
+### Installation examples
+
+```bash
+# 1) Quick try-out with uvx
+uvx --from modal-cuda mcc sample.cu --gpu A100
+
+# 2) Install once as a tool and reuse
+uv tool install modal-cuda
+mcc sample.cu --nvcc-arg=-arch=sm_90
+
+# 3) Project dependency + local run
+uv add modal-cuda
+uv run mcc kernels/reduction.cu --gpu L40S
 ```
 
 ## Usage
